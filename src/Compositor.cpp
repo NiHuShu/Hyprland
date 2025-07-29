@@ -2927,14 +2927,16 @@ void CCompositor::arrangeMonitors() {
     // reset maxXOffsetRight (reuse)
     // and set xwayland positions aka auto for all
     maxXOffsetRight = 0;
-    for (auto& m : m_vMonitors) {
-        Debug::log(LOG, "arrangeMonitors: {} xwayland [{}, {}]", m->szName, m->vecPosition.x, m->vecPosition.y);
-        m->vecXWaylandPosition = m->vecPosition;
+    for (auto const& m : m_monitors) {
+    // Use the position that Hyprland provides directly (e.g. m->m_position)
+        Debug::log(LOG, "arrangeMonitors: {} xwayland [{}, {}]", m->m_name, m->m_position.x, m->m_position.y);
+        m->m_xwaylandPosition = m->m_position;  // use actual monitor position
 
+    // Apply proper scale based on PXWLFORCESCALEZERO
         if (*PXWLFORCESCALEZERO)
-                m->xwaylandScale = m->scale;
+            m->m_xwaylandScale = m->m_scale;
         else
-                m->xwaylandScale = 1.f;
+            m->m_xwaylandScale = 1.f;
     }
 
     PROTO::xdgOutput->updateAllOutputs();
