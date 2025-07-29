@@ -2927,15 +2927,14 @@ void CCompositor::arrangeMonitors() {
     // reset maxXOffsetRight (reuse)
     // and set xwayland positions aka auto for all
     maxXOffsetRight = 0;
-    for (auto const& m : m_monitors) {
-        Debug::log(LOG, "arrangeMonitors: {} xwayland [{}, {}]", m->m_name, maxXOffsetRight, 0);
-        m->m_xwaylandPosition = {maxXOffsetRight, 0};
-        maxXOffsetRight += (*PXWLFORCESCALEZERO ? m->m_transformedSize.x : m->m_size.x);
+    for (auto& m : m_vMonitors) {
+        Debug::log(LOG, "arrangeMonitors: {} xwayland [{}, {}]", m->szName, m->vecPosition.x, m->vecPosition.y);
+        m->vecXWaylandPosition = m->vecPosition;
 
         if (*PXWLFORCESCALEZERO)
-            m->m_xwaylandScale = m->m_scale;
+                m->xwaylandScale = m->scale;
         else
-            m->m_xwaylandScale = 1.f;
+                m->xwaylandScale = 1.f;
     }
 
     PROTO::xdgOutput->updateAllOutputs();
